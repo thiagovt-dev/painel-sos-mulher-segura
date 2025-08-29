@@ -1,7 +1,9 @@
 import LoginForm from "./_components/LoginForm";
-import { Box, Paper, Typography, Container } from "@mui/material";
+import { Box, Typography, Container, Avatar } from "@mui/material";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/guards";
+import LoginBackground from "./_components/LoginBackground";
+import LoginCard from "./_components/LoginCard";
 
 export default async function LoginPage() {
   const session = await getCurrentUser();
@@ -10,18 +12,29 @@ export default async function LoginPage() {
     redirect("/");
   }
   return (
-    <Container maxWidth="xs" sx={{ minHeight: "100dvh", display: "grid", placeItems: "center" }}>
-      <Paper elevation={6} sx={{ p: 4, width: "100%", borderRadius: 3 }}>
-        <Box sx={{ mb: 2 }}>
-          <Typography component="h1" variant="h5" fontWeight={700}>
-            Entrar no painel
+    <LoginBackground>
+      <Container component="main" maxWidth="xs">
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Avatar
+            src="/logo.jpeg"
+            alt="Logo"
+            sx={{ width: 80, height: 80, mb: 2 }}
+            variant="rounded"
+          />
+          <Typography component="h1" variant="h4" sx={{ mb: 3, fontWeight: 'bold' }}>
+            Central Administrativa
           </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Use seu e-mail e senha para continuar.
-          </Typography>
+          <LoginCard>
+            <LoginForm />
+          </LoginCard>
         </Box>
-        <LoginForm />
-      </Paper>
-    </Container>
+      </Container>
+    </LoginBackground>
   );
 }

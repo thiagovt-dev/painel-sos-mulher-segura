@@ -1,23 +1,32 @@
 "use client";
 
 import * as React from "react";
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { logoutAction, checkSessionAction } from "@/lib/actions/auth.actions";
 
-export default function LogoutButton() {
+interface LogoutButtonProps {
+  variant?: 'button' | 'text';
+  onLogout?: () => void;
+}
+
+export default function LogoutButton({ variant = 'button', onLogout }: LogoutButtonProps) {
   const router = useRouter();
   const [pending, startTransition] = React.useTransition();
 
-  const onLogout = React.useCallback(() => {
+  const handleLogout = React.useCallback(() => {
     startTransition(async () => {
       try {
         await logoutAction();
+        // Chama o callback se fornecido (para fechar o menu)
+        if (onLogout) {
+          onLogout();
+        }
       } finally {
         router.replace("/login");
       }
     });
-  }, [router]);
+  }, [router, onLogout]);
 
   // Auto-logout: ping server periodically to ensure session is valid
   React.useEffect(() => {
@@ -38,8 +47,23 @@ export default function LogoutButton() {
     };
   }, [router]);
 
+  if (variant === 'text') {
+    return (
+      <Typography 
+        variant="body2" 
+        onClick={handleLogout}
+        sx={{ 
+          cursor: 'pointer',
+          '&:hover': { textDecoration: 'underline' }
+        }}
+      >
+        {pending ? "Saindo..." : "Sair"}
+      </Typography>
+    );
+  }
+
   return (
-    <Button color="inherit" onClick={onLogout} disabled={pending}>
+    <Button color="secondary" variant="contained" onClick={handleLogout} disabled={pending}>
       {pending ? "Saindo..." : "Sair"}
     </Button>
   );

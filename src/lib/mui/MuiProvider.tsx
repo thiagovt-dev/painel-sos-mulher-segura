@@ -2,8 +2,8 @@
 
 import React from "react";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
-import { ThemeProvider, CssBaseline } from "@mui/material";
-import theme from "./theme";
+import { CssBaseline } from "@mui/material";
+import { ThemeProvider } from "@/lib/contexts/ThemeContext";
 
 export default function MuiProvider({
   children,
@@ -12,7 +12,7 @@ export default function MuiProvider({
 }) {
   return (
     <AppRouterCacheProvider options={{ enableCssLayer: true }}>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider>
         <CssBaseline />
         {children}
       </ThemeProvider>
