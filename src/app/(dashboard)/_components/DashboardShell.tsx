@@ -41,7 +41,12 @@ export default function DashboardShell({ children }: { children: React.ReactNode
             {[
               { label: "Visão geral", href: "/" },
               { label: "Incidentes", href: "/incidents" },
+              { label: "Dispatch", href: "/dispatch" },
               { label: "Viaturas", href: "/units" },
+              { label: "Cidadãos", href: "/admin/citizens" },
+              { label: "Admin Users", href: "/admin/users" },
+              { label: "Contatos de Emergência", href: "/emergency-contacts" },
+              { label: "Gravações de Voz", href: "/voice/recordings" },
             ].map((item) => (
               <ListItem key={item.href} disablePadding>
                 <ListItemButton LinkComponent={Link} href={`/${item.href.replace(/^\//, "")}`}>

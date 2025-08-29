@@ -1,7 +1,6 @@
 import { Card, CardContent, Grid, Typography } from "@mui/material";
 
 export default async function DashboardHome() {
-  // Você pode pré-carregar métricas aqui com server actions (listIncidentsAction, etc.)
   return (
     <Grid container spacing={2}>
       {[
