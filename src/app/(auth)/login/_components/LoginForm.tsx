@@ -10,8 +10,8 @@ import ThemeToggle from "@/app/(dashboard)/_components/ThemeToggle";
 
 export default function LoginForm() {
   const router = useRouter();
-  const [email, setEmail] = React.useState("maria@example.com");
-  const [password, setPassword] = React.useState("minhasenha123");
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
