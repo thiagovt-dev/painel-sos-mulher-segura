@@ -1,11 +1,6 @@
 export const runtime = 'nodejs';
 
-import { emitNotify } from '@/lib/realtime/bus';
-import { bus } from '@/lib/realtime/bus';
-
-function sseId() {
-  return Math.random().toString(36).slice(2);
-}
+import { bus, type NotifyEvent } from '@/lib/realtime/bus';
 
 export async function GET() {
   const encoder = new TextEncoder();
@@ -13,13 +8,14 @@ export async function GET() {
 
   const stream = new ReadableStream<Uint8Array>({
     start(controller) {
-      const send = (data: any) => {
+      type ControllerWithCleanup = ReadableStreamDefaultController<Uint8Array> & { cleanup?: () => void };
+      const send = (data: unknown) => {
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(data)}\n\n`));
       };
 
       send({ type: 'ready' });
 
-      const onNotify = (ev: any) => {
+      const onNotify = (ev: NotifyEvent) => {
         try { send({ type: 'notify', ...ev }); } catch {}
       };
       bus.on('notify', onNotify);
@@ -35,8 +31,7 @@ export async function GET() {
         try { controller.close(); } catch {}
       };
 
-      // @ts-ignore - not directly available; rely on client disconnect closing the stream
-      (controller as any).cleanup = cleanup;
+      (controller as ControllerWithCleanup).cleanup = cleanup;
     },
     cancel() {
       closed = true;
@@ -53,4 +48,3 @@ export async function GET() {
     },
   });
 }
-

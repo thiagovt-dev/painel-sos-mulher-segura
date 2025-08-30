@@ -12,24 +12,7 @@ import {
   Alert,
 } from "@mui/material";
 import { updateCitizenAction } from "@/lib/actions/admin.actions";
-
-type CitizenProfile = {
-  name?: string;
-  phone?: string;
-  street?: string;
-  number?: string;
-  district?: string;
-  city?: string;
-  state?: string;
-  zip?: string;
-};
-
-type CitizenRow = { 
-  id: string; 
-  email: string; 
-  createdAt?: string; 
-  profile?: CitizenProfile 
-};
+import type { CitizenRow, CitizenProfile } from "@/types/citizens.interface";
 
 interface EditCitizenDialogProps {
   open: boolean;
@@ -64,7 +47,7 @@ export default function EditCitizenDialog({ open, onClose, citizen, onSuccess }:
       } else {
         setError(result.error || "Erro ao atualizar cidadão");
       }
-    } catch (err) {
+    } catch {
       setError("Erro inesperado ao atualizar cidadão");
     } finally {
       setBusy(false);

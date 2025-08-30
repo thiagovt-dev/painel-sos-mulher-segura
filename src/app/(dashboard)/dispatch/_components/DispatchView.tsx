@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import dynamic from "next/dynamic";
-import { Box, Stack, TextField, MenuItem, Paper, Typography, ToggleButtonGroup, ToggleButton, Button } from "@mui/material";
+import { Box, Stack, TextField, MenuItem, Paper, ToggleButtonGroup, ToggleButton, Button } from "@mui/material";
 import type { Unit } from "@/types/units.interface";
 import type { Dispatch } from "@/types/dispatch.interface";
 const DispatchTable = dynamic(() => import("./DispatchTable"), { ssr: false });
@@ -17,14 +17,12 @@ export default function DispatchView({ units }: { units: Unit[] }) {
   const [period, setPeriod] = React.useState<7 | 30 | 90 | 'custom'>(30);
   const [rows, setRows] = React.useState<Dispatch[]>([]);
   const [error, setError] = React.useState<string | undefined>(undefined);
-  const [loading, setLoading] = React.useState(false);
 
   React.useEffect(() => {
     if (!unitId) return;
     (async () => {
-      setLoading(true); setError(undefined);
+      setError(undefined);
       const res = await listDispatchByUnitAction({ unitId, dispatchStatus: dispatchStatus !== 'ALL' ? dispatchStatus : undefined, incidentStatus: incidentStatus !== 'ALL' ? incidentStatus : undefined });
-      setLoading(false);
       if (!res.success) { setError(res.error); setRows([]); }
       else setRows(res.data!);
     })();

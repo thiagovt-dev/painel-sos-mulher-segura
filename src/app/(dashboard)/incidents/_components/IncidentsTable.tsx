@@ -5,40 +5,9 @@ import { Alert, Box, Button, Stack, TextField, MenuItem, Paper, Typography, Togg
 import TrendsChart from "../../_components/TrendsChart";
 import DispatchDialog from "../../dispatch/_components/DispatchDialog";
 import { tIncidentStatus } from "@/lib/i18n/strings";
-import type { CloseIncidentDTO, CancelIncidentDTO } from "@/types/incidents.interface";
+import type { CloseIncidentDTO, CancelIncidentDTO, IncidentWithCitizen } from "@/types/incidents.interface";
 
-type IncidentWithCitizen = {
-  id: string;
-  code: string;
-  description: string;
-  lat: string;
-  lng: string;
-  address: string;
-  status: string;
-  audioRoomId: string | null;
-  createdAt: string;
-  updatedAt: string;
-  citizenId: string;
-  closedAt: string | null;
-  closedById: string | null;
-  closedReason: string | null;
-  dispatches: any[];
-  citizen: {
-    userId: string;
-    name: string;
-    phone: string;
-    street: string;
-    number: string;
-    district: string;
-    city: string;
-    state: string;
-    zip: string;
-    lat: string | null;
-    lng: string | null;
-    createdAt: string;
-    updatedAt: string;
-  };
-};
+// Using shared type from interfaces; fields not present from API will be undefined
 import { useAuthRedirect } from "@/lib/hooks/useAuthRedirect";
 
 type Props = {

@@ -159,8 +159,8 @@ export default function DashboardMetrics({ open, inDispatch, resolved, units }: 
                   <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
                     {stat.label}
                   </Typography>
-                  {typeof (stat as any).prev !== 'undefined' && (
-                    <Typography variant="caption" color="text.secondary">Mês anterior: {(stat as any).prev}</Typography>
+                  {typeof stat.prev !== 'undefined' && (
+                    <Typography variant="caption" color="text.secondary">Mês anterior: {stat.prev}</Typography>
                   )}
                 </Box>
                 {stat.icon}

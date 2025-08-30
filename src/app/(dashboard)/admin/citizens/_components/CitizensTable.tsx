@@ -1,5 +1,5 @@
 "use client";
-import { DataGrid, GridColDef, GridValueGetter } from "@mui/x-data-grid";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Alert, Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, Stack, TextField } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
@@ -11,17 +11,7 @@ import { useRouter } from "next/navigation";
 import EditCitizenDialog from "./EditCitizenDialog";
 import EmergencyContactsDialog from "./EmergencyContactsDialog";
 
-type CitizenProfile = {
-  name?: string;
-  phone?: string;
-  street?: string;
-  number?: string;
-  district?: string;
-  city?: string;
-  state?: string;
-  zip?: string;
-};
-type CitizenRow = { id: string; email: string; createdAt?: string; profile?: CitizenProfile };
+import type { CitizenRow } from "@/types/citizens.interface";
 
 export default function CitizensTable({ rows, error }: { rows: CitizenRow[]; error?: string }) {
   console.log(rows);

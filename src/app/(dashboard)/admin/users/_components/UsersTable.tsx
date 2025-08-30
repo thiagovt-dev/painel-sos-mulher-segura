@@ -1,6 +1,6 @@
 "use client";
 
-import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridToolbar, GridRenderCellParams } from "@mui/x-data-grid";
 import { 
   Alert, 
   Box, 
@@ -36,7 +36,7 @@ const columns: GridColDef<AdminUser>[] = [
     headerName: "E-mail", 
     flex: 1.5, 
     minWidth: 250,
-    renderCell: (params: any) => (
+    renderCell: (params: GridRenderCellParams<AdminUser, string | undefined>) => (
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         <Avatar 
           sx={{ 
@@ -46,11 +46,11 @@ const columns: GridColDef<AdminUser>[] = [
             fontSize: '0.875rem'
           }}
         >
-          {params.value.charAt(0).toUpperCase()}
+          {(params.value?.charAt(0).toUpperCase()) ?? '?'}
         </Avatar>
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           <Typography variant="body2" sx={{ fontWeight: 600, color: 'text.primary' }}>
-            {params.value}
+            {params.value ?? ''}
           </Typography>
           <Typography variant="caption" color="text.secondary">
             ID: {params.row.id}
@@ -64,7 +64,7 @@ const columns: GridColDef<AdminUser>[] = [
     headerName: "Nome", 
     flex: 1, 
     minWidth: 180,
-    renderCell: (params: any) => (
+    renderCell: (params: GridRenderCellParams<AdminUser, string | undefined>) => (
       <Typography 
         variant="body2" 
         sx={{ 
@@ -83,7 +83,7 @@ const columns: GridColDef<AdminUser>[] = [
     flex: 1.2,
     minWidth: 200,
     sortable: false,
-    renderCell: (params: any) => (
+    renderCell: (params: GridRenderCellParams<AdminUser, ("ADMIN"|"POLICE"|"CITIZEN")[]>) => (
       <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
         {params.row.roles.map((role: string) => (
           <Chip
@@ -110,38 +110,41 @@ const columns: GridColDef<AdminUser>[] = [
     sortable: false,
     flex: 0.8,
     minWidth: 120,
-    renderCell: (params: any) => (
-      <Stack direction="row" spacing={1}>
-        <Tooltip title="Editar usuário">
-          <IconButton 
-            size="small" 
-            color="primary"
-            sx={{ 
-              '&:hover': { 
-                backgroundColor: 'primary.light',
-                color: 'primary.contrastText'
-              }
-            }}
-          >
-            <EditIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Excluir usuário">
-          <IconButton 
-            size="small" 
-            color="error"
-            sx={{ 
-              '&:hover': { 
-                backgroundColor: 'error.light',
-                color: 'error.contrastText'
-              }
-            }}
-          >
-            <DeleteIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-      </Stack>
-    ),
+    renderCell: (params: GridRenderCellParams<AdminUser, unknown>) => {
+      void params; // avoid unused param lint warning
+      return (
+        <Stack direction="row" spacing={1}>
+          <Tooltip title="Editar usuário">
+            <IconButton 
+              size="small" 
+              color="primary"
+              sx={{ 
+                '&:hover': { 
+                  backgroundColor: 'primary.light',
+                  color: 'primary.contrastText'
+                }
+              }}
+            >
+              <EditIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Excluir usuário">
+            <IconButton 
+              size="small" 
+              color="error"
+              sx={{ 
+                '&:hover': { 
+                  backgroundColor: 'error.light',
+                  color: 'error.contrastText'
+                }
+              }}
+            >
+              <DeleteIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        </Stack>
+      );
+    },
   },
 ];
 

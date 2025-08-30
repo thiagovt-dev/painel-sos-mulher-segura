@@ -3,7 +3,6 @@
 import { Breadcrumbs, Link, Typography } from "@mui/material";
 import { usePathname, useSearchParams } from "next/navigation";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import HomeIcon from '@mui/icons-material/Home';
 
 interface BreadcrumbItem {
   label: string;

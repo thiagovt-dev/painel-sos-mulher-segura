@@ -109,7 +109,6 @@ export function NotificationsProvider({ children }: { children: React.ReactNode 
 
   React.useEffect(() => {
     let mounted = true;
-    let interval: ReturnType<typeof setInterval>;
     let visTimer: ReturnType<typeof setTimeout> | null = null;
     if (sseReady) {
       // SSE ativo; não fazer polling
@@ -237,9 +236,9 @@ export function NotificationsProvider({ children }: { children: React.ReactNode 
     if (typeof document !== 'undefined') document.addEventListener('visibilitychange', onVis);
     tick();
     // Poll every 10s to reduce load
-    interval = setInterval(tick, 10000);
+    const interval = setInterval(tick, 10000);
     return () => { mounted = false; if (visTimer) clearTimeout(visTimer); clearInterval(interval); if (typeof document !== 'undefined') document.removeEventListener('visibilitychange', onVis); };
-  }, [sseReady]);
+  }, [sseReady, router, show]);
 
   const unread = items.filter(i => !i.read).length;
   const markAllRead = () => setItems(prev => prev.map(i => ({ ...i, read: true })));

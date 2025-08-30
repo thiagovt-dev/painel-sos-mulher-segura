@@ -32,7 +32,6 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import { NotificationsProvider, useNotifications } from "@/lib/contexts/NotificationsContext";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import * as React from "react";
-import LogoutButton from "./LogoutButton";
 import Breadcrumb from "./Breadcrumb";
 import ThemeToggle from "./ThemeToggle";
 

@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Typography, IconButton, Snackbar, Paper } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -33,8 +33,9 @@ export default function ContactsTable({ rows, error, citizenId }: Props) {
         setSnack({ open: true, msg: 'Contato atualizado' });
         window.location.reload();
       }
-    } catch (e: any) {
-      setLocalError(e?.message || "Erro ao salvar contato.");
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "Erro ao salvar contato.";
+      setLocalError(msg);
     } finally {
       setBusy(false);
     }
@@ -59,7 +60,7 @@ export default function ContactsTable({ rows, error, citizenId }: Props) {
       headerName: "Fav.", 
       flex: 0.4, 
       minWidth: 80, 
-      valueGetter: (params: any) => params.row.isFavorite ? "Sim" : "Não" 
+      renderCell: (params: GridRenderCellParams<EmergencyContact, boolean | undefined>) => (params.row.isFavorite ? "Sim" : "Não"),
     },
     {
       field: "actions",
@@ -67,7 +68,7 @@ export default function ContactsTable({ rows, error, citizenId }: Props) {
       sortable: false,
       flex: 0.8,
       minWidth: 140,
-      renderCell: (params: any) => (
+      renderCell: (params: GridRenderCellParams<EmergencyContact, unknown>) => (
         <Stack direction="row" spacing={1}>
           <IconButton size="small" onClick={() => handleEdit(params.row)} aria-label="Editar"><EditIcon fontSize="small"/></IconButton>
           <IconButton size="small" onClick={() => remove(params.row.id)} aria-label="Excluir" disabled={busy}><DeleteIcon fontSize="small"/></IconButton>

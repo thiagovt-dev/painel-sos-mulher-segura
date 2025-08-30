@@ -4,6 +4,7 @@ import { withErrorHandling } from "./errorAction";
 import { http } from "@/lib/http/httpClient";
 import { getSessionToken } from "./_getSessionToken";
 import type { AdminUser, CreateCitizenDTO } from "@/types/admin.interface";
+import type { CitizenRow } from "@/types/citizens.interface";
 
 export async function listAdminUsersAction() {
   return withErrorHandling<AdminUser[]>(async () => {
@@ -14,9 +15,9 @@ export async function listAdminUsersAction() {
 }
 
 export async function listAdminCitizensAction() {
-  return withErrorHandling<any[]>(async () => {
+  return withErrorHandling<CitizenRow[]>(async () => {
     const token = await getSessionToken();
-    return http<any[]>("/admin/citizens", {}, { token });
+    return http<CitizenRow[]>("/admin/citizens", {}, { token });
   });
 }
 
@@ -28,7 +29,7 @@ export async function createCitizenAction(payload: CreateCitizenDTO) {
   });
 }
 
-export async function updateCitizenAction(id: string, profile: any) {
+export async function updateCitizenAction(id: string, profile: Record<string, unknown>) {
   return withErrorHandling(async () => {
     const token = await getSessionToken();
     await http(`/admin/citizens/${id}`, { method: "PATCH", body: profile }, { token });

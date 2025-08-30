@@ -48,8 +48,9 @@ export default function DispatchDialog({ open, incidentId, onClose }: Props) {
       if (!r.success) throw new Error(r.error);
       setDispatchId(r.data!.id);
       setStatus("Despacho criado. Notificando viatura...");
-    } catch (e: any) {
-      setError(e?.message || "Erro ao despachar incidente.");
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "Erro ao despachar incidente.";
+      setError(msg);
     } finally {
       setSubmitting(false);
     }
@@ -88,4 +89,3 @@ export default function DispatchDialog({ open, incidentId, onClose }: Props) {
     </Dialog>
   );
 }
-

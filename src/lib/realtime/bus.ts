@@ -3,19 +3,20 @@ import { EventEmitter } from "events";
 
 export type NotifyEvent = {
   title?: string;
-  meta?: { kind?: 'incident' | 'dispatch'; id?: string; status?: string; [k: string]: any };
+  meta?: { kind?: 'incident' | 'dispatch'; id?: string; status?: string; [k: string]: unknown };
   type?: string;
-  payload?: any;
+  payload?: unknown;
 };
 
 class Bus extends EventEmitter {}
 
 // Singleton bus instance for this process
-export const bus = globalThis.__notify_bus__ as Bus || new Bus();
-// @ts-ignore
-if (!globalThis.__notify_bus__) globalThis.__notify_bus__ = bus;
+declare global {
+  var __notify_bus__: Bus | undefined;
+}
+
+export const bus: Bus = globalThis.__notify_bus__ ?? (globalThis.__notify_bus__ = new Bus());
 
 export function emitNotify(ev: NotifyEvent) {
   bus.emit('notify', ev);
 }
-
