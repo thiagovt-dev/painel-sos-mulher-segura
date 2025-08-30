@@ -6,7 +6,7 @@ export interface EmergencyContact {
     priority?: number;
     isFavorite?: boolean;
   }
-  export interface CreateEmergencyContactDTO extends Omit<EmergencyContact, "id"> {}
-  export type UpdateEmergencyContactDTO = Partial<CreateEmergencyContactDTO>;
+export type CreateEmergencyContactDTO = Omit<EmergencyContact, "id">;
+export type UpdateEmergencyContactDTO = Partial<CreateEmergencyContactDTO>;
 
   

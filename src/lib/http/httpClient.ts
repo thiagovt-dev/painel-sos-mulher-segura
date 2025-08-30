@@ -36,6 +36,10 @@ export async function http<T>(
       const j = await res.json();
       msg = j?.message || msg;
     } catch {}
+    if (res.status === 401) {
+      // Normalize unauthorized to a consistent message for client handling
+      msg = 'unauthorized';
+    }
     throw new ServerActionError(msg, res.status);
   }
 

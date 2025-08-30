@@ -26,3 +26,11 @@ export async function createCitizenAction(payload: CreateCitizenDTO) {
     return { ok: true };
   });
 }
+
+export async function createAdminUserAction(payload: { email: string; username: string; password: string }) {
+  return withErrorHandling(async () => {
+    const token = await getSessionToken();
+    await http("/admin/users/admin", { method: "POST", body: payload }, { token });
+    return { ok: true };
+  });
+}

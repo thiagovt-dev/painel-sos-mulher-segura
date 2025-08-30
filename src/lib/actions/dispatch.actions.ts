@@ -16,10 +16,10 @@ export async function listDispatchByUnitAction(params: { unitId: string; dispatc
 }
 
 export async function createDispatchAction(payload: CreateDispatchDTO) {
-  return withErrorHandling(async () => {
+  return withErrorHandling<Dispatch>(async () => {
     const token = await getSessionToken();
-    await http("/dispatch", { method: "POST", body: payload }, { token });
-    return { ok: true };
+    const created = await http<Dispatch>("/dispatch", { method: "POST", body: payload }, { token });
+    return created;
   });
 }
 

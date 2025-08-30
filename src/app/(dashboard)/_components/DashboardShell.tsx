@@ -30,6 +30,7 @@ import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import ContactPhoneIcon from "@mui/icons-material/ContactPhone";
 import MicIcon from "@mui/icons-material/Mic";
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import { NotificationsProvider, useNotifications } from "@/lib/contexts/NotificationsContext";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import * as React from "react";
 import LogoutButton from "./LogoutButton";
@@ -49,9 +50,11 @@ const menuItems = [
   { label: "Gravações de Voz", href: "/voice/recordings", icon: <MicIcon /> },
 ];
 
-export default function DashboardShell({ children }: { children: React.ReactNode }) {
+function ShellInner({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [notifAnchor, setNotifAnchor] = React.useState<null | HTMLElement>(null);
+  const { unread, items, markAllRead } = useNotifications();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -125,8 +128,8 @@ export default function DashboardShell({ children }: { children: React.ReactNode
           </Typography>
           
           {/* Notifications */}
-          <IconButton color="inherit" sx={{ ml: 1 }}>
-            <Badge badgeContent={4} color="error">
+          <IconButton color="inherit" sx={{ ml: 1 }} onClick={(e)=> setNotifAnchor(e.currentTarget)}>
+            <Badge badgeContent={unread} color="error">
               <NotificationsIcon />
             </Badge>
           </IconButton>
@@ -210,7 +213,37 @@ export default function DashboardShell({ children }: { children: React.ReactNode
         <Toolbar />
         <Breadcrumb />
         {children}
+        <Menu
+          anchorEl={notifAnchor}
+          open={Boolean(notifAnchor)}
+          onClose={()=> setNotifAnchor(null)}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        >
+          <MenuItem disabled>
+            <Typography variant="subtitle2">Notificações</Typography>
+          </MenuItem>
+          {items.length === 0 && <MenuItem disabled><Typography variant="body2">Sem novas notificações</Typography></MenuItem>}
+          {items.slice(0,20).map(n => (
+            <MenuItem key={n.id}>
+              <Typography variant="body2">{n.title}</Typography>
+            </MenuItem>
+          ))}
+          {items.length > 0 && (
+            <MenuItem onClick={()=> { markAllRead(); setNotifAnchor(null); }}>
+              <Typography variant="body2">Marcar todas como lidas</Typography>
+            </MenuItem>
+          )}
+        </Menu>
       </Box>
     </Box>
+  );
+}
+
+export default function DashboardShell({ children }: { children: React.ReactNode }) {
+  return (
+    <NotificationsProvider>
+      <ShellInner>{children}</ShellInner>
+    </NotificationsProvider>
   );
 }

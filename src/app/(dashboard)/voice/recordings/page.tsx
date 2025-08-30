@@ -3,6 +3,6 @@ import { listRecordingsByIncidentAction } from "@/lib/actions/voice-recordings.a
 
 export default async function VoiceRecordingsPage({ searchParams }: { searchParams: Promise<{ incidentId?: string }> }) {
   const { incidentId } = await searchParams;
-  const res = incidentId ? await listRecordingsByIncidentAction(incidentId) : { success: true, data: [] as any[] };
+  const res = incidentId ? await listRecordingsByIncidentAction(incidentId) : { success: true, data: [] } as const;
   return <RecordingsTable rows={res.success ? res.data! : []} error={res.success ? undefined : res.error} />;
 }

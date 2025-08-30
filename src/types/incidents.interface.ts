@@ -1,6 +1,6 @@
 import { ISODate } from "./common.interface";
 
-export type IncidentStatus = "OPEN" | "IN_DISPATCH" | "CLOSED" | "CANCELED";
+export type IncidentStatus = "OPEN" | "IN_DISPATCH" | "RESOLVED" | "CANCELED";
 
 export interface Incident {
   id: string;

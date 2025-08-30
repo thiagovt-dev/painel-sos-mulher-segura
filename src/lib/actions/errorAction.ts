@@ -1,4 +1,5 @@
 import { ZodError } from "zod";
+import { tError } from "@/lib/i18n/strings";
 
 function isNextRedirectError(error: unknown): error is { digest: string } {
   return (
@@ -31,7 +32,7 @@ export async function withErrorHandling<T>(
     console.error("Erro na Server Action:", error);
 
     if (error instanceof ServerActionError) {
-      return { success: false, error: error.message };
+      return { success: false, error: tError(error.message) };
     }
 
     if (error instanceof ZodError) {
@@ -42,7 +43,7 @@ export async function withErrorHandling<T>(
 
     const message =
       error instanceof Error && typeof error.message === "string"
-        ? error.message
+        ? tError(error.message)
         : "Ocorreu um erro inesperado. Tente novamente mais tarde.";
     return { success: false, error: message };
   }
