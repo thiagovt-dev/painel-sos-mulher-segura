@@ -1,7 +1,7 @@
 "use client";
 
 import { Breadcrumbs, Link, Typography } from "@mui/material";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import HomeIcon from '@mui/icons-material/Home';
 
@@ -13,7 +13,7 @@ interface BreadcrumbItem {
 const pathMap: Record<string, string> = {
   '/': 'Visão Geral',
   '/incidents': 'Incidentes',
-  '/dispatch': 'Dispatch',
+  '/dispatch': 'Atendimentos',
   '/units': 'Viaturas',
   '/admin/citizens': 'Cidadãos',
   '/admin/users': 'Usuários Administrativos',
@@ -23,6 +23,7 @@ const pathMap: Record<string, string> = {
 
 export default function Breadcrumb() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   
   const generateBreadcrumbs = (): BreadcrumbItem[] => {
     const paths = pathname.split('/').filter(Boolean);
@@ -33,7 +34,13 @@ export default function Breadcrumb() {
     let currentPath = '';
     paths.forEach((path) => {
       currentPath += `/${path}`;
-      const label = pathMap[currentPath] || path.charAt(0).toUpperCase() + path.slice(1);
+      let label = pathMap[currentPath] || path.charAt(0).toUpperCase() + path.slice(1);
+      
+      // Special handling for emergency-contacts with citizenId
+      if (currentPath === '/emergency-contacts' && searchParams.get('citizenId')) {
+        label = 'Contatos de Emergência do Cidadão';
+      }
+      
       breadcrumbs.push({
         label,
         href: paths[paths.length - 1] === path ? undefined : currentPath

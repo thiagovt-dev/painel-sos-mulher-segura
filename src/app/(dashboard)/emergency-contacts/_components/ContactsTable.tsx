@@ -1,11 +1,10 @@
 "use client";
 import * as React from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Typography, IconButton, Snackbar } from "@mui/material";
-import AddIcon from '@mui/icons-material/Add';
+import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Typography, IconButton, Snackbar, Paper } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { createEmergencyContactAction, deleteEmergencyContactAction, updateEmergencyContactAction } from "@/lib/actions/emergency-contacts.actions";
+import { deleteEmergencyContactAction, updateEmergencyContactAction } from "@/lib/actions/emergency-contacts.actions";
 import type { EmergencyContact } from "@/types/emergency-contacts.interface";
 import { useAuthRedirect } from "@/lib/hooks/useAuthRedirect";
 
@@ -20,7 +19,6 @@ export default function ContactsTable({ rows, error, citizenId }: Props) {
   const [localError, setLocalError] = React.useState<string | undefined>(undefined);
   const [snack, setSnack] = React.useState<{open:boolean; msg:string}>({ open: false, msg: '' });
 
-  const handleAdd = () => { setEditing(null); setForm({ name: "", phone: "", relation: "", priority: 0, isFavorite: false }); setOpen(true); };
   const handleEdit = (c: EmergencyContact) => { setEditing(c); setForm({ name: c.name, phone: c.phone, relation: c.relation || "", priority: c.priority || 0, isFavorite: !!c.isFavorite }); setOpen(true); };
   const handleClose = () => { setOpen(false); setLocalError(undefined); };
 
@@ -31,13 +29,10 @@ export default function ContactsTable({ rows, error, citizenId }: Props) {
       if (editing) {
         const r = await updateEmergencyContactAction(editing.id, { ...form });
         if (!r.success) throw new Error(r.error);
-      } else {
-        const r = await createEmergencyContactAction({ ...form });
-        if (!r.success) throw new Error(r.error);
+        setOpen(false);
+        setSnack({ open: true, msg: 'Contato atualizado' });
+        window.location.reload();
       }
-      setOpen(false);
-      setSnack({ open: true, msg: editing ? 'Contato atualizado' : 'Contato criado' });
-      window.location.reload();
     } catch (e: any) {
       setLocalError(e?.message || "Erro ao salvar contato.");
     } finally {
@@ -59,40 +54,60 @@ export default function ContactsTable({ rows, error, citizenId }: Props) {
     { field: "phone", headerName: "Telefone", flex: 1, minWidth: 140 },
     { field: "relation", headerName: "Relação", flex: 0.8, minWidth: 120 },
     { field: "priority", headerName: "Prioridade", flex: 0.6, minWidth: 100 },
-    { field: "isFavorite", headerName: "Fav.", flex: 0.4, minWidth: 80, valueGetter: (p)=> p.row.isFavorite ? "Sim" : "Não" },
+    { 
+      field: "isFavorite", 
+      headerName: "Fav.", 
+      flex: 0.4, 
+      minWidth: 80, 
+      valueGetter: (params: any) => params.row.isFavorite ? "Sim" : "Não" 
+    },
     {
       field: "actions",
       headerName: "Ações",
       sortable: false,
       flex: 0.8,
       minWidth: 140,
-      renderCell: (p) => (
+      renderCell: (params: any) => (
         <Stack direction="row" spacing={1}>
-          <IconButton size="small" onClick={() => handleEdit(p.row)} aria-label="Editar"><EditIcon fontSize="small"/></IconButton>
-          <IconButton size="small" onClick={() => remove(p.row.id)} aria-label="Excluir" disabled={busy}><DeleteIcon fontSize="small"/></IconButton>
+          <IconButton size="small" onClick={() => handleEdit(params.row)} aria-label="Editar"><EditIcon fontSize="small"/></IconButton>
+          <IconButton size="small" onClick={() => remove(params.row.id)} aria-label="Excluir" disabled={busy}><DeleteIcon fontSize="small"/></IconButton>
         </Stack>
       ),
     },
   ];
 
   return (
-    <Box>
+    <Paper sx={{ p: 3 }}>
       <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
-        <Typography variant="h5" component="h1" sx={{ fontWeight: 600 }}>Contatos de Emergência</Typography>
-        <Stack direction="row" spacing={2}>
-          {citizenId && (
-            <Alert severity="info">Visualizando contatos do usuário logado. Para ver de um cidadão específico, é necessário endpoint admin.</Alert>
-          )}
-          <Button variant="contained" startIcon={<AddIcon/>} onClick={handleAdd}>Adicionar</Button>
-        </Stack>
+        <Typography variant="h5" component="h1" sx={{ fontWeight: 600 }}>
+          Contatos de Emergência
+          {citizenId && <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>Cidadão ID: {citizenId}</Typography>}
+        </Typography>
       </Stack>
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
       <Box sx={{ height: 560, width: "100%" }}>
-        <DataGrid rows={rows} columns={columns} getRowId={(r)=>r.id} pageSizeOptions={[10,25,50]} />
+        <DataGrid 
+          rows={rows} 
+          columns={columns} 
+          getRowId={(r)=>r.id} 
+          pageSizeOptions={[10,25,50]}
+          sx={{
+            '& .MuiDataGrid-cell': {
+              borderBottom: '1px solid #e0e0e0',
+            },
+            '& .MuiDataGrid-columnHeaders': {
+              backgroundColor: '#f5f5f5',
+              borderBottom: '2px solid #e0e0e0',
+            },
+            '& .MuiDataGrid-row:hover': {
+              backgroundColor: '#f8f9fa',
+            },
+          }}
+        />
       </Box>
 
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
-        <DialogTitle>{editing ? "Editar Contato" : "Novo Contato"}</DialogTitle>
+        <DialogTitle>Editar Contato de Emergência</DialogTitle>
         <DialogContent>
           {localError && <Alert severity="error" sx={{ mb: 2 }}>{localError}</Alert>}
           <Stack spacing={2} sx={{ mt: 1 }}>
@@ -104,10 +119,10 @@ export default function ContactsTable({ rows, error, citizenId }: Props) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancelar</Button>
-          <Button onClick={submit} variant="contained" disabled={busy}>{editing ? "Salvar" : "Criar"}</Button>
+          <Button onClick={submit} variant="contained" disabled={busy}>Salvar</Button>
         </DialogActions>
       </Dialog>
       <Snackbar open={snack.open} onClose={()=>setSnack({ open: false, msg: '' })} autoHideDuration={3000} message={snack.msg} />
-    </Box>
+    </Paper>
   );
 }

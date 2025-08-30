@@ -23,11 +23,10 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ReportIcon from "@mui/icons-material/Report";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import MinorCrashIcon from '@mui/icons-material/MinorCrash';
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import PeopleIcon from "@mui/icons-material/People";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
-import ContactPhoneIcon from "@mui/icons-material/ContactPhone";
 import MicIcon from "@mui/icons-material/Mic";
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { NotificationsProvider, useNotifications } from "@/lib/contexts/NotificationsContext";
@@ -42,11 +41,10 @@ const drawerWidth = 240;
 const menuItems = [
   { label: "Visão Geral", href: "/", icon: <DashboardIcon /> },
   { label: "Incidentes", href: "/incidents", icon: <ReportIcon /> },
-  { label: "Dispatch", href: "/dispatch", icon: <LocalShippingIcon /> },
+  { label: "Atendimentos", href: "/dispatch", icon: <MinorCrashIcon /> },
   { label: "Viaturas", href: "/units", icon: <DirectionsCarIcon /> },
   { label: "Cidadãos", href: "/admin/citizens", icon: <PeopleIcon /> },
-  { label: "Admin Users", href: "/admin/users", icon: <AdminPanelSettingsIcon /> },
-  { label: "Contatos de Emergência", href: "/emergency-contacts", icon: <ContactPhoneIcon /> },
+  { label: "Usuários Administrativos", href: "/admin/users", icon: <AdminPanelSettingsIcon /> },
   { label: "Gravações de Voz", href: "/voice/recordings", icon: <MicIcon /> },
 ];
 

@@ -12,6 +12,13 @@ export async function listEmergencyContactsAction() {
   });
 }
 
+export async function listCitizenEmergencyContactsAction(citizenId: string) {
+  return withErrorHandling<EmergencyContact[]>(async () => {
+    const token = await getSessionToken();
+    return http<EmergencyContact[]>(`/admin/citizens/${citizenId}/contacts`, {}, { token });
+  });
+}
+
 export async function createEmergencyContactAction(payload: CreateEmergencyContactDTO) {
   return withErrorHandling(async () => {
     const token = await getSessionToken();

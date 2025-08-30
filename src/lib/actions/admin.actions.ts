@@ -8,7 +8,8 @@ import type { AdminUser, CreateCitizenDTO } from "@/types/admin.interface";
 export async function listAdminUsersAction() {
   return withErrorHandling<AdminUser[]>(async () => {
     const token = await getSessionToken();
-    return http<AdminUser[]>("/admin/users", {}, { token });
+    const res = await http<AdminUser[]>("/admin/users", {}, { token });
+    return res.filter(admin => admin.roles.includes("ADMIN"));
   });
 }
 
@@ -23,6 +24,14 @@ export async function createCitizenAction(payload: CreateCitizenDTO) {
   return withErrorHandling(async () => {
     const token = await getSessionToken();
     await http("/admin/citizens", { method: "POST", body: payload }, { token });
+    return { ok: true };
+  });
+}
+
+export async function updateCitizenAction(id: string, profile: any) {
+  return withErrorHandling(async () => {
+    const token = await getSessionToken();
+    await http(`/admin/citizens/${id}`, { method: "PATCH", body: profile }, { token });
     return { ok: true };
   });
 }

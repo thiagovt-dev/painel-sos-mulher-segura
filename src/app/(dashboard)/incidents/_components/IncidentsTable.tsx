@@ -5,11 +5,44 @@ import { Alert, Box, Button, Stack, TextField, MenuItem, Paper, Typography, Togg
 import TrendsChart from "../../_components/TrendsChart";
 import DispatchDialog from "../../dispatch/_components/DispatchDialog";
 import { tIncidentStatus } from "@/lib/i18n/strings";
-import type { Incident, CloseIncidentDTO, CancelIncidentDTO } from "@/types/incidents.interface";
+import type { CloseIncidentDTO, CancelIncidentDTO } from "@/types/incidents.interface";
+
+type IncidentWithCitizen = {
+  id: string;
+  code: string;
+  description: string;
+  lat: string;
+  lng: string;
+  address: string;
+  status: string;
+  audioRoomId: string | null;
+  createdAt: string;
+  updatedAt: string;
+  citizenId: string;
+  closedAt: string | null;
+  closedById: string | null;
+  closedReason: string | null;
+  dispatches: any[];
+  citizen: {
+    userId: string;
+    name: string;
+    phone: string;
+    street: string;
+    number: string;
+    district: string;
+    city: string;
+    state: string;
+    zip: string;
+    lat: string | null;
+    lng: string | null;
+    createdAt: string;
+    updatedAt: string;
+  };
+};
 import { useAuthRedirect } from "@/lib/hooks/useAuthRedirect";
 
 type Props = {
-  rows: Incident[];
+  rows: IncidentWithCitizen[];
   error?: string;
   onClose: (id: string, dto: CloseIncidentDTO) => Promise<{ success: boolean; error?: string }>;
   onCancel: (id: string, dto: CancelIncidentDTO) => Promise<{ success: boolean; error?: string }>;
@@ -17,6 +50,7 @@ type Props = {
 
 export default function IncidentsTable({ rows, error, onClose, onCancel }: Props) {
   useAuthRedirect(error);
+  console.log(rows);
   const [busyId, setBusyId] = React.useState<string | null>(null);
   const [dispatchIncidentId, setDispatchIncidentId] = React.useState<string | null>(null);
   const [status, setStatus] = React.useState<string>("ALL");
@@ -62,11 +96,12 @@ export default function IncidentsTable({ rows, error, onClose, onCancel }: Props
     setFrom(start.toISOString().slice(0,10));
     setTo(end.toISOString().slice(0,10));
   }, [period]);
+  
   const columns: GridColDef[] = [
     { field: "code", headerName: "Código", flex: 1, minWidth: 120 },
-    { field: "status", headerName: "Status", flex: 1, minWidth: 120, valueFormatter: (p)=> tIncidentStatus(String(p.value)) },
+    { field: "statusFormatted", headerName: "Status", flex: 1, minWidth: 120 },
     { field: "address", headerName: "Endereço", flex: 2, minWidth: 220 },
-    { field: "createdAt", headerName: "Criado em", flex: 1, minWidth: 160 },
+    { field: "createdAtFormatted", headerName: "Criado em", flex: 1, minWidth: 160 },
     {
       field: "actions",
       headerName: "Ações",
@@ -108,7 +143,18 @@ export default function IncidentsTable({ rows, error, onClose, onCancel }: Props
         <TrendsChart data={trendData} />
       </Paper>
       <Box sx={{ height: 560, width: '100%' }}>
-        <DataGrid rows={filtered} columns={columns} getRowId={(r) => r.id} pageSizeOptions={[10, 25, 50]} />
+        <DataGrid 
+          rows={filtered.map(row => ({
+            ...row,
+            statusFormatted: tIncidentStatus(row.status),
+            citizenName: row.citizen?.name || '',
+            citizenPhone: row.citizen?.phone || '',
+            createdAtFormatted: new Date(row.createdAt).toLocaleString('pt-BR')
+          }))} 
+          columns={columns} 
+          getRowId={(r) => r.id} 
+          pageSizeOptions={[10, 25, 50]} 
+        />
       </Box>
       <DispatchDialog open={!!dispatchIncidentId} incidentId={dispatchIncidentId || ''} onClose={() => setDispatchIncidentId(null)} />
     </Box>
